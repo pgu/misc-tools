@@ -2,7 +2,7 @@ function analyzeText () {
   const resultText = document.getElementById('result-text');
   resultText.innerText = '';
 
-  const text = document.getElementById('content-to-analyze');
+  const text = document.getElementById('content-to-analyze').value;
   const parts = text.split('<ns2:ItemID>');
   parts.shift(); // remove head
 
@@ -30,7 +30,7 @@ function analyzeText () {
 
   if (duplicateIds.length > 0) {
     console.log(`There are ${duplicateIds.length} duplicates: `, duplicateIds);
-    resultText.innerText = `There are ${duplicateIds.length} duplicates: ` + duplicateIds.toString;
+    resultText.innerText = `There are ${duplicateIds.length} duplicates:\n` + duplicateIds.join('\n');
   } else {
     console.log('Well done, no duplicates');
     resultText.innerText = 'Well done, no duplicates';
