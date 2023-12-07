@@ -3,17 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
+  <style>
+    .container {
+      display: flex;
+    }
+  </style>
 </head>
 <body>
-<p>Copy content</p>
-<textarea id="content-to-analyze"></textarea>
-<button type="button" onclick="(() => {analyzeText()})()">Test</button>
-<p id="result-text"></p>
+<div class="container">
+  <div>
+    <p>Copy content</p>
+    <textarea id="content-to-analyze"></textarea>
+    <button type="button" onclick="(() => {analyzeText()})()">Test</button>
+    <p id="result-text"></p>
+  </div>
+  <div>
+    <!--    <button type="button" onclick="copyNewText()">Copy</button>-->
+    <pre id="new-text"></pre>
+  </div>
+</div>
 </body>
 <script>
   function analyzeText () {
     const resultText = document.getElementById('result-text');
     resultText.innerText = '';
+
+    const newTextDom = document.getElementById('new-text');
+    newTextDom.innerText = '';
 
     const text = document.getElementById('content-to-analyze').value;
     const parts = text.split('<ns2:ItemID>');
@@ -49,9 +65,33 @@
       resultText.innerText = 'Well done, no duplicates';
     }
 
+    const templateItem = `
+                                    <Item>
+                                        <ns2:ItemID>$$_DUPLICATE_ID_$$</ns2:ItemID>
+                                        <ns2:UnitOfMeasureCode>_ALL</ns2:UnitOfMeasureCode>
+                                    </Item>
+                                    `;
+
+    let newText = text;
+    for (let i = 0; i < duplicateIds.length; i++) {
+      const duplicateId = duplicateIds[ i ];
+      const itemToRemove = templateItem.replace('$$_DUPLICATE_ID_$$', duplicateId);
+      console.log(itemToRemove);
+      newText = newText.replace(itemToRemove, '');
+    }
+
+    newTextDom.innerText = newText;
+    navigator.clipboard.writeText(newText);
+
   }
 
 
-
+  // function copyNewText () {
+  // const textArea = document.getElementById('new-text');
+  // textArea.focus();
+  // textArea.select();
+  // document.execCommand('copy');
+  // navigator.clipboard.writeText(textArea.value);
+  // }
 </script>
 </html>
