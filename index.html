@@ -14,25 +14,29 @@
       flex: 1 1 0;
     }
 
-    .text-to-analyze {
-      width: 30vh;
-    }
-
     .container-text {
       display: flex;
     }
 
-    .container-text > textarea {
+    .container-text-left {
       flex: 2 1 auto;
+      position: relative;
     }
 
-    .container-text > div {
+    .btn-clear {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.6rem;
+    }
+
+    .container-text-right {
       flex: 1 1 auto;
       padding: 0 1rem;
     }
 
-    .container-text > div > button {
+    .btn-big {
       width: 100%;
+      height: 2rem;
     }
 
     .hide {
@@ -43,8 +47,17 @@
       display: block;
     }
 
+    textarea {
+      width: 98%;
+    }
+
     pre {
       white-space: pre-wrap;
+    }
+
+    #result-text {
+      line-height: 1.6;
+      letter-spacing: 0.03rem;
     }
   </style>
 </head>
@@ -53,11 +66,14 @@
   <div>
     <p>Copy content in the textarea</p>
     <div class="container-text">
-      <textarea id="content-to-analyze" class="text-to-analyze" rows="20"></textarea>
-      <div>
-        <button type="button" onclick="analyzeText()">Search for duplicates</button>
+      <div class="container-text-left">
+        <button type="button" onclick="clearAll()" class="btn-clear">Clear</button>
+        <textarea id="content-to-analyze" rows="20"></textarea>
+      </div>
+      <div class="container-text-right">
+        <button type="button" onclick="analyzeText()" class="btn-big">Search for duplicates</button>
         <p id="result-text"></p>
-        <button type="button" onclick="copyNewText()" id="btn-copy" class="hide">Copy clean version</button>
+        <button type="button" onclick="copyNewText()" id="btn-copy" class="hide btn-big">Copy clean version</button>
         <span id="copy-confirmation" class="hide">Copied!</span>
       </div>
     </div>
@@ -73,18 +89,12 @@
   function analyzeText () {
 
     // clean up
-    textWithoutDuplicates = '';
-    document.getElementById('btn-copy').classList.remove('show');
-
-    const resultText = document.getElementById('result-text');
-    resultText.innerText = '';
-
-    const newTextDom = document.getElementById('new-text');
-    newTextDom.innerText = '';
+    clearPreviousExec();
 
     // exec
+    const resultText = document.getElementById('result-text');
+
     const text = document.getElementById('content-to-analyze').value;
-    console.log(text);
     if (!text) {
       resultText.innerText = 'There\'s nothing in the textarea...';
       return;
@@ -139,6 +149,7 @@
     }
 
     textWithoutDuplicates = newText;
+    const newTextDom = document.getElementById('new-text');
     newTextDom.innerText = textWithoutDuplicates;
     document.getElementById('btn-copy').classList.add('show');
 
@@ -151,5 +162,22 @@
       document.getElementById('copy-confirmation').classList.remove('show');
     }, 1 * 1000);
   }
+
+  function clearPreviousExec () {
+    textWithoutDuplicates = '';
+    document.getElementById('btn-copy').classList.remove('show');
+
+    const resultText = document.getElementById('result-text');
+    resultText.innerText = '';
+
+    const newTextDom = document.getElementById('new-text');
+    newTextDom.innerText = '';
+  }
+
+  function clearAll () {
+    clearPreviousExec();
+    document.getElementById('content-to-analyze').value = '';
+  }
+
 </script>
 </html>
