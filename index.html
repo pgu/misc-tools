@@ -7,7 +7,7 @@
     .container {
       display: flex;
       margin: 0 auto;
-      width: 66%;
+      width: 80%;
     }
 
     .container > div {
@@ -28,18 +28,23 @@
 
     .container-text > div {
       flex: 1 1 auto;
+      padding: 0 1rem;
     }
 
     .container-text > div > button {
       width: 100%;
     }
 
-    .btn-copy {
+    .hide {
       display: none;
     }
 
-    .btn-copy-display {
+    .show {
       display: block;
+    }
+
+    pre {
+      white-space: pre-wrap;
     }
   </style>
 </head>
@@ -52,7 +57,8 @@
       <div>
         <button type="button" onclick="analyzeText()">Search for duplicates</button>
         <p id="result-text"></p>
-        <button type="button" onclick="copyNewText()" id="btn-copy" class="btn-copy">Copy clean version</button>
+        <button type="button" onclick="copyNewText()" id="btn-copy" class="hide">Copy clean version</button>
+        <span id="copy-confirmation" class="hide">Copied!</span>
       </div>
     </div>
   </div>
@@ -68,7 +74,7 @@
 
     // clean up
     textWithoutDuplicates = '';
-    document.getElementById('btn-copy').classList.remove('btn-copy-display');
+    document.getElementById('btn-copy').classList.remove('show');
 
     const resultText = document.getElementById('result-text');
     resultText.innerText = '';
@@ -134,12 +140,16 @@
 
     textWithoutDuplicates = newText;
     newTextDom.innerText = textWithoutDuplicates;
-    document.getElementById('btn-copy').classList.add('btn-copy-display');
+    document.getElementById('btn-copy').classList.add('show');
 
   }
 
   function copyNewText () {
     navigator.clipboard.writeText(textWithoutDuplicates);
+    document.getElementById('copy-confirmation').classList.add('show');
+    setTimeout(() => {
+      document.getElementById('copy-confirmation').classList.remove('show');
+    }, 1 * 1000);
   }
 </script>
 </html>
