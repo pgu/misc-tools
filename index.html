@@ -6,32 +6,84 @@
   <style>
     .container {
       display: flex;
+      margin: 0 auto;
+      width: 66%;
+    }
+
+    .container > div {
+      flex: 1 1 0;
+    }
+
+    .text-to-analyze {
+      width: 30vh;
+    }
+
+    .container-text {
+      display: flex;
+    }
+
+    .container-text > textarea {
+      flex: 2 1 auto;
+    }
+
+    .container-text > div {
+      flex: 1 1 auto;
+    }
+
+    .container-text > div > button {
+      width: 100%;
+    }
+
+    .btn-copy {
+      display: none;
+    }
+
+    .btn-copy-display {
+      display: block;
     }
   </style>
 </head>
 <body>
 <div class="container">
   <div>
-    <p>Copy content</p>
-    <textarea id="content-to-analyze"></textarea>
-    <button type="button" onclick="(() => {analyzeText()})()">Test</button>
-    <p id="result-text"></p>
+    <p>Copy content in the textarea</p>
+    <div class="container-text">
+      <textarea id="content-to-analyze" class="text-to-analyze" rows="20"></textarea>
+      <div>
+        <button type="button" onclick="analyzeText()">Search for duplicates</button>
+        <p id="result-text"></p>
+        <button type="button" onclick="copyNewText()" id="btn-copy" class="btn-copy">Copy clean version</button>
+      </div>
+    </div>
   </div>
   <div>
-    <!--    <button type="button" onclick="copyNewText()">Copy</button>-->
     <pre id="new-text"></pre>
   </div>
 </div>
 </body>
 <script>
+  let textWithoutDuplicates = '';
+
   function analyzeText () {
+
+    // clean up
+    textWithoutDuplicates = '';
+    document.getElementById('btn-copy').classList.remove('btn-copy-display');
+
     const resultText = document.getElementById('result-text');
     resultText.innerText = '';
 
     const newTextDom = document.getElementById('new-text');
     newTextDom.innerText = '';
 
+    // exec
     const text = document.getElementById('content-to-analyze').value;
+    console.log(text);
+    if (!text) {
+      resultText.innerText = 'There\'s nothing in the textarea...';
+      return;
+    }
+
     const parts = text.split('<ns2:ItemID>');
     parts.shift(); // remove head
 
@@ -57,12 +109,12 @@
       }
     }
 
-    if (duplicateIds.length > 0) {
-      console.log(`There are ${duplicateIds.length} duplicates: `, duplicateIds);
+    if (duplicateIds.length > 1) {
       resultText.innerText = `There are ${duplicateIds.length} duplicates:\n` + duplicateIds.join('\n');
+    } else if (duplicateIds.length === 1) {
+      resultText.innerText = `There is ${duplicateIds.length} duplicate:\n` + duplicateIds[ 0 ];
     } else {
-      console.log('Well done, no duplicates');
-      resultText.innerText = 'Well done, no duplicates';
+      resultText.innerText = '👏 Well done, no duplicates 😄';
     }
 
     const templateItem = `
@@ -80,18 +132,14 @@
       newText = newText.replace(itemToRemove, '');
     }
 
-    newTextDom.innerText = newText;
-    navigator.clipboard.writeText(newText);
+    textWithoutDuplicates = newText;
+    newTextDom.innerText = textWithoutDuplicates;
+    document.getElementById('btn-copy').classList.add('btn-copy-display');
 
   }
 
-
-  // function copyNewText () {
-  // const textArea = document.getElementById('new-text');
-  // textArea.focus();
-  // textArea.select();
-  // document.execCommand('copy');
-  // navigator.clipboard.writeText(textArea.value);
-  // }
+  function copyNewText () {
+    navigator.clipboard.writeText(textWithoutDuplicates);
+  }
 </script>
 </html>
