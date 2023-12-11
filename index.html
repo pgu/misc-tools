@@ -133,12 +133,17 @@
       resultText.innerText = '👏 Well done, no duplicates 😄';
     }
 
-    const templateItem = `
-                                    <Item>
-                                        <ns2:ItemID>$$_DUPLICATE_ID_$$</ns2:ItemID>
-                                        <ns2:UnitOfMeasureCode>_ALL</ns2:UnitOfMeasureCode>
-                                    </Item>
-                                    `;
+    const templateItem = `\t\t\t\t\t\t\t\t\t<Item>
+\t\t\t\t\t\t\t\t\t\t<ns2:ItemID>$$_DUPLICATE_ID_$$</ns2:ItemID>
+\t\t\t\t\t\t\t\t\t\t<ns2:UnitOfMeasureCode>_ALL</ns2:UnitOfMeasureCode>
+\t\t\t\t\t\t\t\t\t</Item>
+`;
+    // const templateItem = `
+    //                                 <Item>
+    //                                     <ns2:ItemID>$$_DUPLICATE_ID_$$</ns2:ItemID>
+    //                                     <ns2:UnitOfMeasureCode>_ALL</ns2:UnitOfMeasureCode>
+    //                                 </Item>
+    //                                 `;
 
     let newText = text;
     for (let i = 0; i < duplicateIds.length; i++) {
